@@ -1,0 +1,28 @@
+idf_component_register(SRCS 
+                        "board.c"
+                        "button.c"
+                        "buzzer.c"
+                        "dht_sensor.c"
+                        "ds18b20.c"
+                        "event_bus.c"
+                        "http_server.c"
+                        "hydro_manager.c"
+                        "keep_alive.c"
+                        "lcd_display.c"
+                        "main.c"
+                        "relays.c"
+                        "rtc_ds3231.c"
+                        "sdcard.c"
+                        "sensor_manager.c"
+                        "state_manager.c"
+                        "storage_manager.c"
+                        "time_manager.c"
+                        "utill.c"
+                        "wifi_conn.c"
+                        
+                    INCLUDE_DIRS "."
+                    EMBED_FILES 
+                        "favicon.ico"
+                        "style.css"
+                        "script.js"
+                        "index.html")

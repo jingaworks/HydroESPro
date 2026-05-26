@@ -1,0 +1,722 @@
+:root {
+    --bg-primary: #121214;
+    --bg-sidebar: #1a1a1e;
+    --bg-card: #202024;
+    --text-main: #e1e1e6;
+    --text-muted: #8d8d99;
+    --accent: #04d361;
+    --border: #29292e;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ============================================================================
+   2. CONFIGURARE SIDEBAR & INPUTS
+   ============================================================================ */
+.sidebar {
+    width: 360px;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 10px;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 10px;
+}
+
+/* Pe desktop, ascundem butonul de închidere al sidebar-ului */
+.menu-close-btn {
+    display: none;
+}
+
+.menu-group {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border);
+}
+
+.menu-group h3 {
+    font-size: 1rem;
+    color: var(--accent);
+    margin-bottom: 12px;
+}
+
+.input-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* Elemente de Control (Câmpuri și Liste) */
+input,
+select {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 6px 10px;
+    border-radius: 4px;
+    width: 120px;
+    outline: none;
+    text-align: center;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--accent);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.time-picker {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.time-picker input {
+    width: 55px;
+    padding: 6px 5px;
+}
+
+input[step="0.1"] {
+    width: 80px;
+}
+
+/* ============================================================================
+   3. CONȚINUT PRINCIPAL & CARDURI TELEMETRIE
+   ============================================================================ */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.offline {
+    background: #c53030;
+}
+
+.online {
+    background: var(--accent);
+    color: #000;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.card h4 {
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.card p {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Pompe Active (Stări Dinamice Verde) */
+.card.pump-active {
+    background-color: #064e3b;
+    border-color: var(--accent);
+}
+
+.card.pump-active p {
+    color: var(--accent);
+}
+
+/* ============================================================================
+   4. MODUL GRAFICĂ & ZONĂ ISTORIC (DESKTOP DEFAULT)
+   ============================================================================ */
+.history-section {
+    margin-top: 25px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    position: relative;
+    /* Esențial pentru blocarea corectă a overlay-ului */
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+}
+
+.history-section h2 {
+    font-size: 1.2rem;
+    color: var(--text-main);
+}
+
+/* Butonul de activare Overlay stocare */
+.btn-secondary {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Structura grafic încadrat */
+.chart-relative-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.chart-with-arrows {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.chart-container-box {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 15px;
+    width: 100%;
+}
+
+/* Rândul de butoane navigare sub grafic pe Desktop */
+.arrows-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+}
+
+.nav-arrow-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    max-width: 120px;
+    text-align: center;
+}
+
+.nav-arrow-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-primary);
+}
+
+.nav-arrow-btn:disabled {
+    opacity: 0.15;
+    cursor: not-allowed;
+}
+
+#btn-next-day {
+    margin-left: auto;
+}
+
+/* ============================================================================
+   5. INTERFAȚĂ OVERLAY STOCARE CALE DISK
+   ============================================================================ */
+.logs-overlay-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 30, 0.98);
+    z-index: 99;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    /* Animație fluidă de apariție */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-20px);
+    transition: all 0.3s ease-in-out;
+}
+
+.logs-overlay-panel.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.overlay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+}
+
+.overlay-header h3 {
+    font-size: 1rem;
+    color: var(--accent);
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-close:hover {
+    color: #c53030;
+}
+
+/* Coloanele verticale pentru senzori în Overlay */
+.overlay-split-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    flex: 1;
+    overflow: hidden; /* Păstrăm hidden aici pentru ca fundalul mare să nu se miște */
+    height: calc(100% - 60px); /* Îi dăm o înălțime fixă raportată la container */
+}
+
+.category-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    max-height: 290px; /* !!! FORȚEAZĂ COLOANA SĂ SE OPREASCĂ ÎNAINTE DE MARGINEA DE JOS !!! */
+}
+
+.category-block h4 {
+    font-size: 0.9rem;
+    color: var(--text-main);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 5px;
+}
+
+.logs-grid-sub {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    overflow-y: auto;   /* Permite scroll doar pe verticală */
+    overflow-x: hidden; /* Blochează complet orice mișcare pe orizontală */
+    
+    padding-right: 2px;
+    -webkit-overflow-scrolling: touch; /* Scroll fin, accelerat hardware pe telefoane */
+}
+
+/* ============================================================================
+   ASCUNDEREA COMPLETĂ A BARELOR DE SCROLL INESTETICE (DAR PĂSTRĂM FUNCȚIONALITATEA)
+   ============================================================================ */
+
+/* Pentru browserele bazate naiv pe WebKit (Chrome, Safari, Edge, Opera, browsere de mobil) */
+.logs-grid-sub::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar {
+    display: none; /* Ascunde complet bara de scroll vizuală */
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Pentru Firefox */
+.logs-grid-sub,
+.sidebar {
+    scrollbar-width: none; /* Ascunde bara în Firefox */
+}
+
+/* Pentru Internet Explorer / vechiul Edge */
+.logs-grid-sub,
+.sidebar {
+    -ms-overflow-style: none; /* Ascunde bara în IE */
+}
+
+/* Elemente rând din listă */
+.log-row-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 10px;
+}
+
+.log-link {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+    flex: 1;
+}
+
+.log-link:hover {
+    color: var(--accent);
+}
+
+.btn-delete-log {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.btn-delete-log:hover {
+    background: #c53030;
+}
+
+/* ============================================================================
+   6. SUB-SOL DIAGNOZĂ SISTEM
+   ============================================================================ */
+.system-footer {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.system-footer strong {
+    color: var(--text-main);
+}
+
+.diag-divider {
+    color: var(--border);
+}
+
+/* ============================================================================
+   7. REPTABILITATE RESPONSIVĂ (ECRANE MEDII SUB 900PX)
+   ============================================================================ */
+.menu-btn {
+    display: none;
+}
+@media (max-width: 900px) {
+    
+    .overlay-split-categories {
+        grid-template-columns: 1fr; /* Pe mobil devin rânduri unul sub altul */
+        overflow-y: auto;
+    }
+    .category-block {
+        max-height: 180px; /* Limitează înălțimea fiecărei secțiuni pe telefon pentru a nu face scrolling infinit */
+    }
+
+
+
+    .menu-btn { 
+        display: block; 
+        background: var(--bg-sidebar); 
+        color: var(--text-main); 
+        border: none; 
+        padding: 15px; 
+        width: 100%; 
+        text-align: left; 
+        font-size: 1.1rem; 
+        border-bottom: 1px solid var(--border); 
+        
+        /* Butonul rămâne fix sus, gata să fie apăsat din nou pentru închidere */
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1005; /* Îl ridicăm peste sidebar pentru a rămâne vizibil și accesibil oricând! */
+    }
+
+    .app-container {
+        margin-top: 52px; 
+    }
+
+    .sidebar { 
+        width: 100%; 
+        transform: translateX(-100%); 
+        position: fixed; 
+        top: 52px; /* Pornește EXACT sub butonul Meniu, lăsându-l liber */
+        left: 0; 
+        bottom: 0; 
+        z-index: 1000; 
+        
+        /* ACTIVARE SCROLL SIDEBAR MOBIL */
+        overflow-y: auto; 
+        -webkit-overflow-scrolling: touch; 
+    }
+    
+    .sidebar.open { 
+        transform: translateX(0); 
+    }
+
+    /* Oprește derularea paginii cu grafice din spate */
+    body.no-scroll {
+        overflow: hidden;
+    }
+
+    .sidebar h2 {
+        margin-bottom: 20px; /* Redăm spațiul normal sub titlu pe mobil */
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 10px;
+    }
+
+    .overlay-split-categories {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .category-block {
+        flex: none;
+        max-height: 200px;
+    }
+}
+
+
+/* ============================================================================
+   8. OPTIMIZARE MAXIMĂ MOBIL PORTRET (SUB 600PX) - CONTROALE UNIFICATE
+   ============================================================================ */
+@media (max-width: 600px) {
+
+    /* Spațiu maxim pe lateralele ecranului */
+    .main-content {
+        padding: 10px !important;
+    }
+
+    .history-section {
+        padding: 10px !important;
+    }
+
+    .card-grid {
+        gap: 10px !important;
+    }
+
+    .history-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    /* Rândul de butoane se extinde complet sub grafic */
+    .arrows-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        gap: 10px !important;
+    }
+
+    /* Săgețile primesc dimensiuni simetrice și egale pe același rând */
+    .nav-arrow-btn {
+        flex: 1 !important;
+        max-width: 48% !important;
+        padding: 12px 0 !important;
+        font-size: 1.3rem !important;
+    }
+
+    #curve_chart {
+        height: 260px !important;
+        /* Înălțime compactă, nedeformată pe telefon */
+    }
+
+    .system-footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .diag-divider {
+        display: none;
+    }
+}
+
+
+/* Butonul de descărcare fișier log */
+.btn-download-log {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-decoration: none; /* Elimină sublinierea nativă de link */
+    transition: background 0.2s, color 0.2s;
+    margin-right: 5px; /* Lasă un spațiu mic până la butonul de ștergere */
+}
+
+.btn-download-log:hover {
+    background: var(--border);
+    color: var(--accent); /* Devine verde când pui mouse-ul pe el */
+}
+
+/* ============================================================================
+   STILURI STRUCTURĂ ACORDEON SIDEBAR
+   ============================================================================ */
+.accordion-btn {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    padding: 2px 0;
+}
+
+/* Adăugăm o săgeată vizuală mică în dreptul fiecărui titlu din acordeon */
+.accordion-btn::after {
+    content: '▼';
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+}
+
+/* Ascundem conținutul implicit și pregătim animația de tranziție */
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0, 1, 0, 1); /* Deschidere fluidă accelerată */
+    padding-top: 0;
+}
+
+/* Starea deschisă a unui element (Clasa .active se pune din JS pe .accordion-item) */
+.accordion-item.active .accordion-content {
+    max-height: 500px; /* Permite conținutului să se extindă complet */
+    transition: max-height 0.3s cubic-bezier(1, 0, 1, 0);
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    margin-top: 8px;
+}
+
+/* Rotim săgeata când elementul din acordeon devine activ */
+.accordion-item.active .accordion-btn::after {
+    transform: rotate(-180deg);
+    color: var(--accent);
+}
+
+/* Efect vizual pe titlu la hover */
+.accordion-btn:hover h3 {
+    color: var(--accent);
+}
+
+/* Panoul de citire text - acoperă interiorul overlay-ului existent */
+.text-viewer-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #1a1a1e; /* Opacitate completă */
+    z-index: 100;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Stil pentru textul brut din fișierele de erori/info */
+.text-raw-content {
+    flex: 1;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 15px;
+    color: #61fb96; /* Verde deschis în stil terminal/consola */
+    font-family: 'Courier New', Courier, monospace; /* Font monospaced */
+    font-size: 0.9rem;
+    line-height: 1.4;
+    overflow-y: auto; /* Permite scroll vertical dacă fișierul are multe linii */
+    white-space: pre-wrap; /* Păstrează liniile noi și rupe textul lung la margine */
+    word-break: break-all;
+}
+
+
+

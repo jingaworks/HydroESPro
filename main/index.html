@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Hydro Control</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Librăria grafică Chart.js încărcată din CDN extern -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Buton pentru mobil -->
+    <button id="menu-toggle" class="menu-btn">☰ Meniu</button>
+
+    <div class="app-container">
+        <!-- Sidebar Stânga pentru Setări -->
+
+        <!-- Sidebar Stânga pentru Setări tip Acordeon -->
+        <aside class="sidebar" id="sidebar">
+            <h2>⚙️ Configurare</h2>
+
+            <!-- Secțiunea 1: General Timing -->
+            <div class="menu-group accordion-item">
+                <div class="accordion-btn">
+                    <h3>🕒 General Timing</h3>
+                </div>
+                <div class="accordion-content">
+                    <div class="input-row">
+                        <label>Start Time</label>
+                        <div class="time-picker">
+                            <input id="hydro_start_h" type="number" min="0" max="23" placeholder="08" class="action">
+                            <span>:</span>
+                            <input id="hydro_start_m" type="number" min="0" max="59" placeholder="00" class="action">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <label for="hydro_period_hours">Day Period (hrs)</label>
+                        <input id="hydro_period_hours" type="number" min="1" max="24" placeholder="18" class="action">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secțiunea 2: Water Pump -->
+            <div class="menu-group accordion-item">
+                <div class="accordion-btn">
+                    <h3>💧 Water Pump</h3>
+                </div>
+                <div class="accordion-content">
+                    <!-- Timpi Zi -->
+                    <div style="font-size: 0.8rem; color: var(--accent); margin-bottom: 8px; font-weight: bold;">☀️
+                        TIMPI ZI</div>
+                    <div class="input-row">
+                        <label for="hydro_water_on">ON (min)</label>
+                        <input id="hydro_water_on" type="number" min="0" max="60" placeholder="10" class="action">
+                    </div>
+                    <div class="input-row">
+                        <label for="hydro_water_off">OFF (min)</label>
+                        <input id="hydro_water_off" type="number" min="0" max="60" placeholder="20" class="action">
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border); margin: 10px 0;">
+
+                    <!-- Timpi Noapte -->
+                    <div style="font-size: 0.8rem; color: #4ba3e3; margin-bottom: 8px; font-weight: bold;">🌙 TIMPI
+                        NOAPTE</div>
+                    <div class="input-row">
+                        <label for="hydro_w_night_on">ON Noapte (min)</label>
+                        <input id="hydro_w_night_on" type="number" min="0" max="60" placeholder="5" class="action">
+                    </div>
+                    <div class="input-row">
+                        <label for="hydro_w_night_off">OFF Noapte (min)</label>
+                        <input id="hydro_w_night_off" type="number" min="0" max="120" placeholder="60" class="action">
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Secțiunea 3: Air Pump -->
+            <div class="menu-group accordion-item">
+                <div class="accordion-btn">
+                    <h3>💨 Air Pump</h3>
+                </div>
+                <div class="accordion-content">
+                    <div class="input-row">
+                        <label for="hydro_air_mode">Air Mode</label>
+                        <select id="hydro_air_mode" class="action">
+                            <option value="0">Non-Stop</option>
+                            <option value="1">Synchron</option>
+                            <option value="2">Pre-Start</option>
+                        </select>
+                    </div>
+                    <div class="input-row" id="pre-run-container">
+                        <label for="hydro_air_pre_min">Pre-run (min)</label>
+                        <input id="hydro_air_pre_min" type="number" min="0" max="60" placeholder="5" class="action">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secțiunea 4: Alarm Settings -->
+            <div class="menu-group accordion-item">
+                <div class="accordion-btn">
+                    <h3>🚨 Alarm Settings</h3>
+                </div>
+                <div class="accordion-content">
+                    <div class="input-row">
+                        <label for="alarm_mute">Mute Buzzer</label>
+                        <select id="alarm_mute" class="action">
+                            <option value="0">Buzzer ON</option>
+                            <option value="1">Muted 🔇</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <label for="alarm_t_min">Water Min (°C)</label>
+                        <input id="alarm_t_min" type="number" step="0.1" min="10" max="40" placeholder="18.0"
+                            class="action">
+                    </div>
+                    <div class="input-row">
+                        <label for="alarm_t_max">Water Max (°C)</label>
+                        <input id="alarm_t_max" type="number" step="0.1" min="10" max="40" placeholder="26.0"
+                            class="action">
+                    </div>
+                    <div class="input-row">
+                        <label for="alarm_float_inv">Tank Sensor</label>
+                        <select id="alarm_float_inv" class="action">
+                            <option value="0">Normal</option>
+                            <option value="1">Inverted</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOU: Secțiunea 5: Storage & Logs Settings -->
+            <div class="menu-group accordion-item">
+                <div class="accordion-btn">
+                    <h3>📁 Storage & Logs</h3>
+                </div>
+                <div class="accordion-content">
+                    <!-- DHT Log Enable -->
+                    <div class="input-row">
+                        <label for="log_dht_enable">Logare DHT</label>
+                        <select id="log_dht_enable" class="action">
+                            <option value="1">Activă</option>
+                            <option value="0">Deactivată</option>
+                        </select>
+                    </div>
+                    <!-- DHT Log Interval (Va fi ascuns dinamic dacă logarea e oprită) -->
+                    <div class="input-row" id="row-dht-interval">
+                        <label for="log_dht_interval">Interval DHT (min)</label>
+                        <input id="log_dht_interval" type="number" min="1" max="60" placeholder="5" class="action">
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border); margin: 12px 0;">
+
+                    <!-- DS Log Enable -->
+                    <div class="input-row">
+                        <label for="log_ds_enable">Logare DS Apă</label>
+                        <select id="log_ds_enable" class="action">
+                            <option value="1">Activă</option>
+                            <option value="0">Deactivată</option>
+                        </select>
+                    </div>
+                    <!-- DS Log Interval (Va fi ascuns dinamic dacă logarea e oprită) -->
+                    <div class="input-row" id="row-ds-interval">
+                        <label for="log_ds_interval">Interval DS (min)</label>
+                        <input id="log_ds_interval" type="number" min="1" max="60" placeholder="5" class="action">
+                    </div>
+                </div>
+            </div>
+            <!-- Adaugă această secțiune în acordeonul din index.html -->
+            <div class="menu-group accordion-item">
+                <div class="accordion-btn">
+                    <h3>🌐 Configurare Wi-Fi</h3>
+                </div>
+                <div class="accordion-content">
+                    <!-- Selector Mod Principal -->
+                    <div class="input-row">
+                        <label for="wifi_mode">Mod Wi-Fi</label>
+                        <select id="wifi_mode" class="action">
+                            <option value="0">Access Point (AP)</option>
+                            <option value="1">Station (STA)</option>
+                        </select>
+                    </div>
+
+                    <!-- NOU: Setări pentru rețeaua proprie AP (Vizibile mereu sau când e selectat AP) -->
+                    <div id="section-ap-config" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div
+                            style="font-size: 0.8rem; color: #f5a623; font-weight: bold; margin-top: 5px; margin-bottom: 2px;">
+                            📡 SETĂRI REȚEA PROPRIE (AP)</div>
+                        <div class="input-row">
+                            <label for="wifi_ap_ssid">Nume Wi-Fi (SSID)</label>
+                            <input id="wifi_ap_ssid" type="text" placeholder="Garden_AP" class="action"
+                                style="width: 120px;">
+                        </div>
+                        <div class="input-row">
+                            <label for="wifi_ap_pass">Parolă Wi-Fi</label>
+                            <input id="wifi_ap_pass" type="password" placeholder="••••••••" class="action"
+                                style="width: 120px;">
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border); margin: 10px 0;">
+
+                    <!-- Zona de Scanare și Selecție Retea (Pentru modul STA) -->
+                    <div id="section-sta-config" style="display: none; flex-direction: column; gap: 10px;">
+                        <div style="font-size: 0.8rem; color: var(--accent); font-weight: bold; margin-bottom: 2px;">🔗
+                            CONECTARE ROUTER</div>
+
+                        <div class="input-row">
+                            <label>Selectează Rețea</label>
+                            <div style="display: flex; gap: 5px; width: 120px;">
+                                <select id="wifi_scanned_ssids" style="width: 80px; padding: 6px 2px;">
+                                    <option value="">---</option>
+                                </select>
+                                <button id="btn-wifi-scan" class="btn-secondary" style="padding: 6px; width: 35px;"
+                                    title="Scanează rețele">🔍</button>
+                            </div>
+                        </div>
+
+                        <div class="input-row">
+                            <label for="wifi_password">Parolă Wi-Fi</label>
+                            <input id="wifi_password" type="password" placeholder="••••••••" style="width: 120px;">
+                        </div>
+
+                        <button id="btn-wifi-test" class="btn-secondary"
+                            style="width: 100%; margin-top: 5px; padding: 10px; color: var(--accent); border-color: var(--accent);">
+                            ⚡ Testează Conexiunea
+                        </button>
+
+                        <!-- Zona Dinamică de Status Conexiune / Rezultat IP -->
+                        <div id="wifi-status-box"
+                            style="display: none; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; border: 1px solid var(--border); font-size: 0.85rem; text-align: center; flex-direction: column; gap: 8px; margin-top: 5px;">
+                            <p id="wifi-status-text" style="color: var(--text-muted);"></p>
+                            <div id="wifi-switch-container" style="display: none; flex-direction: column; gap: 5px;">
+                                <p style="color: #4ba3e3; font-weight: bold; font-size: 0.9rem;" id="wifi-ip-display">
+                                    IP: 0.0.0.0</p>
+                                <button id="btn-wifi-switch" class="btn-secondary"
+                                    style="width: 100%; padding: 8px; background: #064e3b; color: #04d361; border-color: #04d361; font-weight: bold;">
+                                    🔄 Comută în mod STA (Închide AP)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Zona Principală (Dashboard + Grafice) -->
+        <main class="main-content">
+            <header>
+                <h1>Hydro System Dashboard</h1>
+                <div id="status-badge" class="badge offline">Deconectat</div>
+            </header>
+
+            <!-- Grila de carduri 1: Mediu -->
+            <section class="card-grid">
+                <div class="card">
+                    <h4>Temperatură</h4>
+                    <p id="val-temp">--.- °C</p>
+                </div>
+                <div class="card">
+                    <h4>Umiditate</h4>
+                    <p id="val-hum">-- %</p>
+                </div>
+            </section>
+
+            <!-- Grila de carduri 2: Actuatori și Timp -->
+            <section class="card-grid">
+                <div class="card">
+                    <h4>Timp Sistem</h4>
+                    <p id="val-time">00:00:00</p>
+                </div>
+                <div class="card">
+                    <h4>Temperatură Apă</h4>
+                    <p id="val-ds-temp">--.- °C</p>
+                </div>
+                <div id="card-pompa-apa" class="card">
+                    <h4>Stare Pompă Apă</h4>
+                    <p id="val-pompa-apa">--</p>
+                </div>
+                <div id="card-pompa-aer" class="card">
+                    <h4>Stare Pompă Aer</h4>
+                    <p id="val-pompa-aer">--</p>
+                </div>
+            </section>
+
+            <!-- Zona de Alerte Roșii (Apare doar la probleme) -->
+            <section class="card-grid" id="alarm-section" style="display: none;">
+                <div class="card" style="grid-column: 1 / -1; background: #c53030; text-align: center;">
+                    <h4 style="color: #fff;">⚠️ ALARMĂ ACTIVĂ SISTEM</h4>
+                    <p id="val-alarm-msg" style="font-size: 1.1rem; margin-top: 5px; font-weight: bold;">--</p>
+                </div>
+            </section>
+
+            <!-- Înlocuiește complet secțiunea de istoric din index.html cu aceasta -->
+            <section class="history-section">
+                <div class="history-header">
+                    <h2>📊 Istoric Date & Grafice</h2>
+                    <button id="btn-toggle-logs" class="btn-secondary">📁 Deschide Stocare SD</button>
+                </div>
+
+                <!-- Zona Graficului încadrat de butoane stânga/dreapta -->
+                <div class="chart-relative-container">
+                    <!-- Înlocuiește doar structura .chart-with-arrows din index.html cu aceasta -->
+                    <div class="chart-with-arrows">
+                        <!-- Containerul graficului -->
+                        <div class="chart-container-box">
+                            <div id="curve_chart" style="width: 100%; height: 360px;"></div>
+                        </div>
+
+                        <!-- Rândul dedicat butoanelor (pe desktop va fi controlat diferit, pe mobil va sta jos) -->
+                        <div class="arrows-row">
+                            <button id="btn-prev-day" class="nav-arrow-btn" title="Ziua Precedentă">◀</button>
+                            <button id="btn-next-day" class="nav-arrow-btn" title="Ziua Următoare">▶</button>
+                        </div>
+                    </div>
+
+                    <!-- OVERLAY: Panoul cu fișiere separat pe categorii -->
+                    <div id="logs-overlay" class="logs-overlay-panel">
+                        <div class="overlay-header">
+                            <h3>Selectează fișierul de istoric</h3>
+                            <button id="btn-close-overlay" class="btn-close">✕ Închide</button>
+                        </div>
+
+                        <!-- Separare pe două categorii mari în interiorul overlay-ului -->
+                        <div class="overlay-split-categories">
+                            <div class="category-block">
+                                <h4>🌡️ Aer (DHT)</h4>
+                                <div id="logs-list-dht" class="logs-grid-sub">
+                                    <p class="text-muted">Se încarcă...</p>
+                                </div>
+                            </div>
+
+                            <div class="category-block">
+                                <h4>💧 Apă (DS)</h4>
+                                <div id="logs-list-ds" class="logs-grid-sub">
+                                    <p class="text-muted">Se încarcă...</p>
+                                </div>
+                            </div>
+
+                            <!-- NOU: Coloană dedicată pentru Informații Sistem / Restarts -->
+                            <div class="category-block">
+                                <h4>ℹ️ Info Sistem</h4>
+                                <div id="logs-list-info" class="logs-grid-sub">
+                                    <p class="text-muted">Se încarcă...</p>
+                                </div>
+                            </div>
+
+                            <!-- NOU: Coloană dedicată pentru Jurnalul de Erori -->
+                            <div class="category-block">
+                                <h4>⚠️ Log Erori</h4>
+                                <div id="logs-list-errors" class="logs-grid-sub">
+                                    <p class="text-muted">Se încarcă...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pune acest bloc chiar înainte de ultimul </div> al elementului #logs-overlay -->
+                        <div id="text-viewer-overlay" class="text-viewer-panel" style="display: none;">
+                            <div class="overlay-header">
+                                <h3 id="text-viewer-title">📄 Vizualizare Fișier</h3>
+                                <button id="btn-close-viewer" class="btn-close">✕ Închide Fișier</button>
+                            </div>
+                            <!-- Zona unde se va injecta textul din /info/ sau /errors/ -->
+                            <pre id="text-viewer-content" class="text-raw-content"></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Subsol Diagnoză Sistem -->
+            <footer class="system-footer">
+                <div class="diag-item">RSSI: <strong id="val-rssi">--</strong> dBm</div>
+                <div class="diag-divider">|</div>
+                <div class="diag-item">RAM Liber: <strong id="val-heap">--</strong></div>
+                <div class="diag-divider">|</div>
+                <div class="diag-item">Uptime: <strong id="val-uptime">--</strong></div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
