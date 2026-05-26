@@ -1,6 +1,79 @@
-managed_components/
+
+# ==================== ESP-IDF & Build ====================
 build/
-.vscode
+sdkconfig
+sdkconfig.old
+sdkconfig.defaults
+*.bin
+*.elf
+*.map
+*.lst
+*.o
+*.d
+*.dep
+*.a
+
+# ==================== ESP-IDF Specific ====================
+managed_components/
+dependencies.lock
+esp-idf/
+idf.py.log
+CMakeCache.txt
+CMakeFiles/
+*.cmake
+compile_commands.json
+
+# ==================== PlatformIO ====================
+.pio/
+platformio.ini.local
+
+# ==================== OS & Editors ====================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.sublime-*
+.vscode/
+.idea/
+.cproject
+.project
+
+# ==================== Logs & Temporary ====================
+*.log
+log/
+logs/
+*.bak
+*.tmp
+
+# ==================== Python & Virtual Env ====================
+__pycache__/
+*.pyc
+venv/
+env/
+.python-version
+
+# ==================== Security ====================
+secrets.h
+credentials.h
+wifi_credentials.h
+
+# ==================== Hardware / Specific ====================
+*.kicad*
+*.sch
+*.pcb
+*.lpp
+*.csv.bak
+
+# ==================== Documentation ====================
+*.pdf
+*.docx
+*.xlsx
+
+# ==================== Other ====================
+*.bak
+*.orig
+*.rej
+
 hvb9bx8oxsn31.webp
 29025412-d29a52ba-7b76-11e7-8848-5afb1a7057d9.png
 20vks6xoetn31.webp
