@@ -12,7 +12,7 @@ static bool sensors_ready = false;
 // =============================================
 esp_err_t sensor_log_reading(sensor_type_t type, float temp, float humidity, bool valid)
 {
-    struct tm tm = time_manager_get_tm();
+    struct tm tm = time_manager_get_current_time();
     char log_line[128];
 
     if (!valid) {

@@ -1,6 +1,7 @@
 
 # ==================== ESP-IDF & Build ====================
 build/
+bkp/
 sdkconfig
 sdkconfig.old
 sdkconfig.defaults

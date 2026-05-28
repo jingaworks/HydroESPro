@@ -28,13 +28,13 @@ static void hydro_state_event_handler(void *arg, esp_event_base_t base,
                 pompa_aer_status = false;
                 switch_relay(RELAY_WATER_PUMP_GPIO, false);
                 switch_relay(RELAY_AIR_PUMP_GPIO, false);
-                storage_log_printf(LOG_TYPE_SYSTEM, "\n%02u:%02u:%02u - MAINTENANCE: Pumps forced OFF",
-                    rtc_time.tm_hour, rtc_time.tm_min, rtc_time.tm_sec);
+                storage_log_printf(LOG_TYPE_SYSTEM, "\n%s - MAINTENANCE: Pumps forced OFF",
+                    time_manager_get_formatted_time());
             }
             else if (ev->new_state == SYS_STATE_NORMAL) {
                 ESP_LOGI(TAG, "NORMAL MODE → Resuming automatic control");
-                storage_log_printf(LOG_TYPE_SYSTEM, "\n%02u:%02u:%02u - NORMAL: Automatic hydro control resumed",
-                    rtc_time.tm_hour, rtc_time.tm_min, rtc_time.tm_sec);
+                storage_log_printf(LOG_TYPE_SYSTEM, "\n%s - NORMAL: Automatic hydro control resumed",
+                    time_manager_get_formatted_time());
             }
             break;
         }
@@ -110,8 +110,8 @@ static void hydro_control_loop(void) {
             switch_relay(RELAY_AIR_PUMP_GPIO, false);
 
             storage_log_printf(LOG_TYPE_SYSTEM,
-                "\n%02u:%02u:%02u - SAFETY: Tank low → All pumps FORCED OFF",
-                rtc_time.tm_hour, rtc_time.tm_min, rtc_time.tm_sec);
+                "\n%s - SAFETY: Tank low → All pumps FORCED OFF",
+                time_manager_get_formatted_time());
         }
         return;
     }
@@ -190,7 +190,7 @@ static void hydro_control_loop(void) {
 
     // Jurnalizare automată pe SD doar la schimbare
     if (changed) {
-        struct tm tm = time_manager_get_tm();
+        struct tm tm = time_manager_get_current_time();
         storage_log_printf(LOG_TYPE_SYSTEM,
             "\n%02u:%02u:%02u - HYDRO [%s]: Water=%s | Air=%s | Reason: %s",
             tm.tm_hour, tm.tm_min, tm.tm_sec,

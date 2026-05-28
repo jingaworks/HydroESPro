@@ -1,19 +1,16 @@
 #include "storage_manager.h"
-// #include "sdcard.h"           // păstrăm low-level pentru moment
 #include "utill.h"
+
+
 #include <esp_log.h>
 #include <stdarg.h>
 #include <string.h>
+
 #include <sys/stat.h>
 #include <dirent.h>
-
-
-// #include <sys/unistd.h>
-#include <sys/stat.h>
 #include "esp_vfs_fat.h"
 #include "sdmmc_cmd.h"
 #include "driver/sdmmc_host.h"
-// #include <dirent.h>
 
 static const char *TAG = "STORAGE_MANAGER";
 
@@ -105,7 +102,7 @@ static void sd_log_writer_task(void *arg) {
             // ESP_LOGI(TAG, "Received log item: %s", log_types[log_item->type]);
             if (log_item && log_item->data) {
                 // Build path using time_manager
-                struct tm tm = time_manager_get_tm();
+                struct tm tm = time_manager_get_current_time();
                 snprintf(filepath, sizeof(filepath), "%s/%s_%02d_%02d_%04d.txt",
                     log_item->dir,
                     log_types[log_item->type],

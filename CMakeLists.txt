@@ -9,7 +9,7 @@ set(EXTRA_COMPONENT_DIRS C:/Users/AppDev/esp/esp-idf-lib/components)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
 
-project(esp_garden_v2)
+project(HydroESPro_v1)
 
 idf_build_set_property(COMPILE_OPTIONS "-I../main" APPEND)
 

@@ -8,12 +8,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <time.h>
+#include <sys/time.h>
+
 #include <sys/unistd.h>
+#include <dirent.h>
 #include <sys/stat.h>
 #include "esp_vfs_fat.h"
 #include "sdmmc_cmd.h"
-
-#include <dirent.h>
 
 #include <driver/gpio.h>
 #include <lwip/sockets.h>
@@ -25,28 +27,21 @@
 
 #include <esp_transport.h>
 
-#include <time.h>
-#include <sys/time.h>
-
-
 #include "cJSON.h"
 
 #include "keep_alive.h"
-#include "wifi_conn.h"
 
-
-#include "dht_sensor.h"
+// #include "dht_sensor.h"
+// #include "sdcard.h"
 #include "ds18b20.h"
-
 #include "board.h"
 #include "config.h"
-#include "sdcard.h"
 
 #include "hydro_manager.h"
 #include "storage_manager.h"
 #include "time_manager.h"
+#include "wifi_manager.h"
 
-#include "wifi_conn.h"
 
 #define WEB_MAXDELAY 512
 #define WEB_DATA_QUEUE_SIZE 10

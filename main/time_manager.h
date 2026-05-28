@@ -1,32 +1,21 @@
 #pragma once
 
-#include <esp_err.h>
-#include <stdbool.h>
+#include "esp_err.h"
 #include <time.h>
-// #include "event_bus.h"
+#include <sys/time.h>
+#include "event_bus.h"
 
-
-extern char current_timezone[64] ;
-
-// ==================== PUBLIC API ====================
 esp_err_t time_manager_init(void);
 
-esp_err_t time_manager_set_timezone(const char *tz);
-const char* time_manager_get_timezone(void);
+esp_err_t time_manager_sync_with_sntp(void);
 
-// esp_err_t time_manager_sync_from_sntp(void);
-esp_err_t time_manager_set_time(struct tm *timeinfo);
+struct tm time_manager_get_current_time(void);
+time_t    time_manager_get_timestamp(void);
 
-time_t time_manager_get_unix_time(void);
-struct tm time_manager_get_tm(void);           // returns copy of rtc_time
-bool time_manager_is_synced(void);
+const char* time_manager_get_formatted_time(void);      // HH:MM:SS
+const char* time_manager_get_formatted_datetime(void);  // YYYY-MM-DD HH:MM:SS
+const char* time_manager_get_formatted_date(void);      // YYYY-MM-DD
 
-void time_manager_print_current_time(void);
+esp_err_t time_manager_set_from_browser(struct timeval *tv);
 
-// ==================== Legacy / Compatibility ====================
-// Temporar - vor fi eliminate treptat
-extern struct tm rtc_time;
-extern bool time_synchronized;
-
-// ==================== TAG ====================
-extern const char *TIME_MANAGER_TAG;
+bool time_manager_is_time_valid(void);

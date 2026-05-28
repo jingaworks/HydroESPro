@@ -1,5 +1,5 @@
 #include "http_server.h"
-#include "rtc_ds3231.h"
+// #include "rtc_ds3231.h"
 
 static const char *TAG = "LOCAL_SERVER";
 
@@ -663,7 +663,7 @@ static void web_server_task(void *pvParameters) {
                 else if (!strcmp(variable, "sync_browser_time")) {
                     // Verificăm dacă sistemul este deja sincronizat prin SNTP (Internet). 
                     // Dacă are deja internet, prioritizăm SNTP-ul și ignorăm timpul browserului pentru a evita decalaje fine de milisecunde.
-                    if (!time_manager_is_synced()) {
+                    if (!time_manager_is_time_valid()) {
                         time_t browser_unix_sec = (time_t)strtol(value, NULL, 10);
 
                         if (browser_unix_sec > 1700000000) { // Validare minimă de siguranță (anul > 2023)
@@ -672,7 +672,7 @@ static void web_server_task(void *pvParameters) {
                             ESP_LOGW(TAG, "Sistemul nu are internet. Se aplică ora primită de la browser: %ld", (long)browser_unix_sec);
 
                             // Apelăm funcția ta nativă care salvează timpul în DS3231 și actualizează ceasul intern
-                            if (set_ds_browser_time(&tv_browser) == ESP_OK) {
+                            if (time_manager_set_from_browser(&tv_browser) == ESP_OK) {
                                 ESP_LOGI(TAG, "Ora sistemului și modulul RTC DS3231 au fost sincronizate cu succes din browser!");
 
                                 // Opțional: Forțăm o notificare pe WebSocket înapoi la pagină ca să actualizeze instant ceasul web
@@ -832,13 +832,13 @@ static void web_server_task(void *pvParameters) {
 
                         // Telemetrie de pornire
                         // DHT Readings (Numele cheilor modificate pentru a se potrivi cu ID-urile din noul HTML)
-                        if (dht_valid_reading) {
-                            p += sprintf(p, "\"temperature\":\"%.1f\",", dht_temp);
-                            p += sprintf(p, "\"humidity\":\"%.1f\",", dht_humid);
-                        }
-                        else {
-                            p += sprintf(p, "\"temperature\":\"--.-\",\"humidity\":\"--\",");
-                        }
+                        // if (dht_valid_reading) {
+                        //     p += sprintf(p, "\"temperature\":\"%.1f\",", dht_temp);
+                        //     p += sprintf(p, "\"humidity\":\"%.1f\",", dht_humid);
+                        // }
+                        // else {
+                        //     p += sprintf(p, "\"temperature\":\"--.-\",\"humidity\":\"--\",");
+                        // }
 
                         // Setări hidro (Cheile trebuie să fie identice cu ID-urile din HTML!)
                         p += sprintf(p, "\"hydro_start_h\":\"%02d\",", hydro_settings.start_hour);
@@ -873,13 +873,13 @@ static void web_server_task(void *pvParameters) {
                         *p++ = '{';
 
                         // DHT 1 Readings (Numele cheilor modificate pentru a se potrivi cu ID-urile din noul HTML)
-                        if (dht_valid_reading) {
-                            p += sprintf(p, "\"temperature\":\"%.1f\",", dht_temp);
-                            p += sprintf(p, "\"humidity\":\"%.1f\",", dht_humid);
-                        }
-                        else {
-                            p += sprintf(p, "\"temperature\":\"--.-\",\"humidity\":\"--\",");
-                        }
+                        // if (dht_valid_reading) {
+                        //     p += sprintf(p, "\"temperature\":\"%.1f\",", dht_temp);
+                        //     p += sprintf(p, "\"humidity\":\"%.1f\",", dht_humid);
+                        // }
+                        // else {
+                        //     p += sprintf(p, "\"temperature\":\"--.-\",\"humidity\":\"--\",");
+                        // }
 
                         // Trimitem și valorile curente ale noilor inputuri la inițializare pentru a se completa pe pagină
                         p += sprintf(p, "\"hydro_start_h\":\"%02d\",", hydro_settings.start_hour);
@@ -960,7 +960,7 @@ static void web_status_task(void *pvParameters) {
                 char *p = json_response;
 
                 // Obținem timpul Unix actual utilizând funcția ta dedicată
-                time_t now = time_manager_get_unix_time();
+                time_t now = time_manager_get_timestamp();
 
                 *p++ = '{';
 
@@ -968,13 +968,13 @@ static void web_status_task(void *pvParameters) {
                 p += sprintf(p, "\"epoch\":%ld,", (long)now);
 
                 // DHT 1 Readings (Nume chei aliniate cu interfața)
-                if (dht_valid_reading) {
-                    p += sprintf(p, "\"temperature\":\"%.1f\",", dht_temp);
-                    p += sprintf(p, "\"humidity\":\"%.1f\",", dht_humid);
-                }
-                else {
-                    p += sprintf(p, "\"temperature\":\"--.-\",\"humidity\":\"--\",");
-                }
+                // if (dht_valid_reading) {
+                //     p += sprintf(p, "\"temperature\":\"%.1f\",", dht_temp);
+                //     p += sprintf(p, "\"humidity\":\"%.1f\",", dht_humid);
+                // }
+                // else {
+                //     p += sprintf(p, "\"temperature\":\"--.-\",\"humidity\":\"--\",");
+                // }
 
                 // DS Temp (Temperatura apei)
                 if (ds_valid_reding) {

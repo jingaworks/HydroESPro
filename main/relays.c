@@ -27,8 +27,8 @@ static void relays_event_handler(void *arg, esp_event_base_t base,
                 ESP_LOGW(TAG, "MAINTENANCE → Forcing all relays OFF");
                 switch_relay(RELAY_WATER_PUMP_GPIO, false);
                 switch_relay(RELAY_AIR_PUMP_GPIO, false);
-                storage_log_printf(LOG_TYPE_SYSTEM, "\n%02u:%02u:%02u - RELAYS: All OFF (Maintenance)", 
-                                  rtc_time.tm_hour, rtc_time.tm_min, rtc_time.tm_sec);
+                storage_log_printf(LOG_TYPE_SYSTEM, "\n%s - RELAYS: All OFF (Maintenance)", 
+                                  time_manager_get_formatted_time());
             }
             break;
         }
@@ -51,7 +51,7 @@ void switch_relay(int relay_gpio, bool state)
     }
 
     // Logging
-    struct tm tm = time_manager_get_tm();
+    struct tm tm = time_manager_get_current_time();
     storage_log_printf(LOG_TYPE_SYSTEM, "\n%02u:%02u:%02u - RELAY %d = %s", 
                       tm.tm_hour, tm.tm_min, tm.tm_sec, 
                       relay_gpio, state ? "ON" : "OFF");
