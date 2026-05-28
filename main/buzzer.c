@@ -34,7 +34,7 @@ static void buzzer_system_event_handler(void *arg, esp_event_base_t base,
     if (base != SYSTEM_EVENTS) return;
 
     switch (event_id) {
-        case SYS_EVENT_ALARM_TRIGGERED:
+        case EVENT_ALARM_TRIGGERED:
             if (!sys_manager.buzzer_muted) {
                 ESP_LOGI(TAG, "Event: ALARM_TRIGGERED → Starting alarm pattern");
                 // Poți porni o alarmă generică sau specifica
@@ -46,7 +46,7 @@ static void buzzer_system_event_handler(void *arg, esp_event_base_t base,
             }
             break;
 
-        case SYS_EVENT_MAINTENANCE_START:
+        case EVENT_SYSTEM_MAINTENANCE_START:
             ESP_LOGI(TAG, "Event: MAINTENANCE_START → Starting maintenance beep");
             buzzer_trigger_alarm((buzzer_alarm_t){
                 .alarm_id = 99, // ID special pentru mentenanta
@@ -55,7 +55,7 @@ static void buzzer_system_event_handler(void *arg, esp_event_base_t base,
             });
             break;
 
-        case SYS_EVENT_STATE_CHANGED: {
+        case EVENT_SYSTEM_STATE_CHANGED: {
             state_change_event_t *ev = (state_change_event_t *)event_data;
             
             if (ev->new_state == SYS_STATE_NORMAL) {
@@ -68,7 +68,7 @@ static void buzzer_system_event_handler(void *arg, esp_event_base_t base,
             break;
         }
 
-        case SYS_EVENT_MAINTENANCE_END:
+        case EVENT_SYSTEM_MAINTENANCE_END:
             buzzer_stop_all_alarms();
             break;
     }
@@ -158,13 +158,13 @@ void buzzer_init(void) {
     }
 
     // ==================== ABONARE LA EVENT BUS ====================
-    event_bus_register_handler(SYSTEM_EVENTS, SYS_EVENT_ALARM_TRIGGERED,
+    event_bus_register_handler(SYSTEM_EVENTS, EVENT_ALARM_TRIGGERED,
         buzzer_system_event_handler, NULL);
 
-    event_bus_register_handler(SYSTEM_EVENTS, SYS_EVENT_MAINTENANCE_START,
+    event_bus_register_handler(SYSTEM_EVENTS, EVENT_SYSTEM_MAINTENANCE_START,
         buzzer_system_event_handler, NULL);
 
-    event_bus_register_handler(SYSTEM_EVENTS, SYS_EVENT_STATE_CHANGED,
+    event_bus_register_handler(SYSTEM_EVENTS, EVENT_SYSTEM_STATE_CHANGED,
         buzzer_system_event_handler, NULL);
 
     ESP_LOGI(TAG, "Buzzer initialized with Event Bus support");

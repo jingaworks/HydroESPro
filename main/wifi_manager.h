@@ -16,7 +16,7 @@ typedef enum {
     WIFI_STATE_STA_DISCONNECTED,
     WIFI_STATE_STA_ONLY,            // Mod curat - doar STA
     WIFI_STATE_FALLBACK_APSTA,      // STA a picat → revenim cu AP
-    WIFI_STATE_ERROR
+    WIFI_STATE_ERROR,
 } wifi_system_state_t;
 
 typedef struct {
@@ -36,16 +36,6 @@ typedef struct {
 //     char ap_ssid[32];          // Numele rețelei emise de ESP32 (NOU)
 //     char ap_password[64];      // Parola rețelei emise de ESP32 (NOU)
 // } wifi_settings_t;
-
-// Evenimente - le-am mutat in event_bus.
-// typedef enum {
-//     EVENT_WIFI_STATE_CHANGED = 0x200,
-//     EVENT_WIFI_STA_CONNECTED,
-//     EVENT_WIFI_STA_DISCONNECTED,
-//     EVENT_WIFI_STA_FAILED,
-//     EVENT_WIFI_AP_STOPPED,
-//     EVENT_WIFI_FALLBACK_STARTED
-// } wifi_event_id_t;
 
 // API Public
 esp_err_t wifi_manager_init(void);

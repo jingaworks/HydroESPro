@@ -15,52 +15,94 @@ ESP_EVENT_DECLARE_BASE(PCF_EVENTS);
 ESP_EVENT_DECLARE_BASE(HYDRO_EVENTS);
 ESP_EVENT_DECLARE_BASE(LOG_EVENTS);
 
-// =============================================
-// SYSTEM EVENTS
-// =============================================
-typedef enum {
-    SYS_EVENT_TIME_UPDATED = 0,
-    SYS_EVENT_TIME_SYNCED,
-    SYS_EVENT_REBOOT_REQUESTED,
-    SYS_EVENT_STATE_CHANGED,
-    SYS_EVENT_BUTTON_PRESSED,
-    SYS_EVENT_SENSOR_UPDATE,
-    SYS_EVENT_ALARM_TRIGGERED,
-    SYS_EVENT_MAINTENANCE_START,
-    SYS_EVENT_MAINTENANCE_END,
-} system_event_id_t;
+#pragma once
 
 // =============================================
-// WIFI EVENTS
+//                  BASE EVENTS
 // =============================================
 typedef enum {
-    EVENT_WIFI_STATE_CHANGED = 0x200,
+    // System wide events
+    EVENT_SYSTEM_BOOT_COMPLETE = 0x0000,
+    EVENT_SYSTEM_REBOOT_REQUESTED,
+    EVENT_SYSTEM_STATE_CHANGED,
+    EVENT_SYSTEM_ERROR,
+    EVENT_SYSTEM_MAINTENANCE_START,
+    // EVENT_SYSTEM_MAINTENANCE,
+    EVENT_SYSTEM_MAINTENANCE_END,
+
+    // Time related
+    EVENT_TIME_UPDATED = 0x0100,
+    EVENT_TIME_SNTP_SYNC_SUCCESS,
+    EVENT_TIME_SNTP_SYNC_FAILED,
+
+    // WiFi
+    EVENT_WIFI_STATE_CHANGED = 0x0200,
     EVENT_WIFI_STA_CONNECTED,
     EVENT_WIFI_STA_DISCONNECTED,
     EVENT_WIFI_STA_FAILED,
+    EVENT_WIFI_AP_STARTED,
     EVENT_WIFI_AP_STOPPED,
-    EVENT_WIFI_FALLBACK_STARTED
-} wifi_event_id_t;
+    EVENT_WIFI_SCAN_DONE,
 
-// =============================================
-// PCF EVENTS
-// =============================================
-
-typedef enum {
-    EVENT_PCF_INPUT_CHANGED = 0x300,
+    // PCF / Inputs
+    EVENT_PCF_INPUT_CHANGED = 0x0300,
     EVENT_PCF_OUTPUT_CHANGED,
     EVENT_BUTTON_PRESSED,
-    EVENT_FLOAT_SWITCH_CHANGED
-} pcf_event_id_t;
+    EVENT_FLOAT_SWITCH_TRIGGERED,
 
-// =============================================
-// DATA STRUCTURES
-// =============================================
-typedef struct {
-    struct tm timeinfo;
-    time_t unix_time;
-    bool is_synced;
-} time_event_data_t;
+    // Hydroponics
+    EVENT_HYDRO_PH_CHANGED = 0x0400,
+    EVENT_HYDRO_EC_CHANGED,
+    EVENT_HYDRO_TEMPERATURE_CHANGED,
+    EVENT_HYDRO_PUMP_STARTED,
+    EVENT_HYDRO_PUMP_STOPPED,
+
+    // Future modules
+    EVENT_LIGHT_STATE_CHANGED = 0x0500,
+    EVENT_AIR_SYSTEM_CHANGED   = 0x0600,
+    EVENT_ALARM_TRIGGERED      = 0x0700,
+    
+    // ...
+
+} event_id_t;
+
+// // =============================================
+// // SYSTEM EVENTS
+// // =============================================
+// typedef enum {
+//     SYS_EVENT_TIME_UPDATED = 0,
+//     SYS_EVENT_TIME_SYNCED,
+//     SYS_EVENT_REBOOT_REQUESTED,
+//     SYS_EVENT_STATE_CHANGED,
+//     SYS_EVENT_BUTTON_PRESSED,
+//     SYS_EVENT_SENSOR_UPDATE,
+//     SYS_EVENT_ALARM_TRIGGERED,
+//     SYS_EVENT_MAINTENANCE_START,
+//     SYS_EVENT_MAINTENANCE_END,
+// } system_event_id_t;
+
+// // =============================================
+// // WIFI EVENTS
+// // =============================================
+// typedef enum {
+//     EVENT_WIFI_STATE_CHANGED = 0x200,
+//     EVENT_WIFI_STA_CONNECTED,
+//     EVENT_WIFI_STA_DISCONNECTED,
+//     EVENT_WIFI_STA_FAILED,
+//     EVENT_WIFI_AP_STOPPED,
+//     EVENT_WIFI_FALLBACK_STARTED
+// } wifi_event_id_t;
+
+// // =============================================
+// // PCF EVENTS
+// // =============================================
+// typedef enum {
+//     EVENT_PCF_INPUT_CHANGED = 0x300,
+//     EVENT_PCF_OUTPUT_CHANGED,
+//     EVENT_BUTTON_PRESSED,
+//     EVENT_FLOAT_SWITCH_CHANGED
+// } pcf_event_id_t;
+
 
 // =============================================
 // PUBLIC API

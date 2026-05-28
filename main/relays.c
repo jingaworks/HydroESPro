@@ -2,6 +2,7 @@
 #include "board.h"
 #include "config.h"
 #include "event_bus.h"
+
 #include "state_manager.h"
 #include "storage_manager.h"
 #include "time_manager.h"
@@ -20,7 +21,7 @@ static void relays_event_handler(void *arg, esp_event_base_t base,
     if (base != SYSTEM_EVENTS) return;
 
     switch (event_id) {
-        case SYS_EVENT_STATE_CHANGED: {
+        case EVENT_SYSTEM_STATE_CHANGED: {
             state_change_event_t *ev = (state_change_event_t *)event_data;
 
             if (ev->new_state == SYS_STATE_MAINTENANCE) {
@@ -93,7 +94,7 @@ esp_err_t relays_init(void)
     switch_relay(RELAY_AIR_PUMP_GPIO, false);
 
     // Abonare la evenimente
-    event_bus_register_handler(SYSTEM_EVENTS, SYS_EVENT_STATE_CHANGED, 
+    event_bus_register_handler(SYSTEM_EVENTS, EVENT_SYSTEM_STATE_CHANGED, 
                               relays_event_handler, NULL);
 
     ESP_LOGI(TAG, "Relays initialized with Event Bus");

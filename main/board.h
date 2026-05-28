@@ -1,4 +1,5 @@
 #pragma once
+#include <state_manager.h>
 
 #include <stdint.h>
 #include <esp_err.h>
@@ -6,14 +7,18 @@
 #include <nvs.h>
 
 
+// Definirea tipului de date pentru starea sistemului
+// typedef uint8_t system_state_t;
+
+
 // Enumerarea tuturor stărilor posibile ale sistemului
-typedef enum {
-    SYS_STATE_INIT = 0,
-    SYS_STATE_NORMAL,
-    SYS_STATE_MAINTENANCE,  // Modul Schimb Apă
-    SYS_STATE_ALARM,         // Modul Alarmă Activă,
-    SYS_STATE_ERROR
-} system_state_t;
+// typedef enum {
+//     SYS_STATE_INIT = 0,
+//     SYS_STATE_NORMAL,
+//     SYS_STATE_MAINTENANCE,  // Modul Schimb Apă
+//     SYS_STATE_ALARM,         // Modul Alarmă Activă,
+//     SYS_STATE_ERROR
+// } system_state_t;
 
 // Structura centrală de stare a managerului
 typedef struct {
@@ -25,11 +30,11 @@ typedef struct {
 
 
 // Structură pentru evenimente
-typedef struct {
-    system_state_t old_state;
-    system_state_t new_state;
-    const char* reason;
-} state_change_event_t;
+// typedef struct {
+//     system_state_t old_state;
+//     system_state_t new_state;
+//     const char* reason;
+// } state_change_event_t;
 
 typedef struct wifi_settings {
     int wifi_mode;             // 0 = AP (Implicit Factory), 1 = STA

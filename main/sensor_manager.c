@@ -1,6 +1,9 @@
 #include "sensor_manager.h"
 #include "time_manager.h"
 #include "state_manager.h"
+#include "config.h"
+#include "event_bus.h"
+
 #include <esp_log.h>
 
 static const char *TAG = "SENSOR_MANAGER";
@@ -40,7 +43,7 @@ static void sensor_event_handler(void *arg, esp_event_base_t base,
     if (base != SYSTEM_EVENTS) return;
 
     // Poți adăuga reacții la stări sistem (ex: oprire senzori în mentenanță)
-    if (event_id == SYS_EVENT_STATE_CHANGED) {
+    if (event_id == EVENT_SYSTEM_STATE_CHANGED) {
         state_change_event_t *ev = (state_change_event_t *)event_data;
         if (ev->new_state == SYS_STATE_MAINTENANCE) {
             ESP_LOGI(TAG, "Maintenance mode → sensors paused for logging");
@@ -56,7 +59,7 @@ esp_err_t sensor_manager_init(void)
     ESP_LOGI(TAG, "Sensor Manager initialized");
 
     // Abonare la evenimente de sistem
-    event_bus_register_handler(SYSTEM_EVENTS, SYS_EVENT_STATE_CHANGED, 
+    event_bus_register_handler(SYSTEM_EVENTS, EVENT_SYSTEM_STATE_CHANGED, 
                               sensor_event_handler, NULL);
 
     sensors_ready = true;

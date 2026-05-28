@@ -13,6 +13,7 @@ ESP_EVENT_DEFINE_BASE(WIFI_EVENTS);
 ESP_EVENT_DEFINE_BASE(PCF_EVENTS);
 ESP_EVENT_DEFINE_BASE(HYDRO_EVENTS);
 ESP_EVENT_DEFINE_BASE(LOG_EVENTS);
+
 // ========================================================
 
 static void default_system_handler(void *arg, esp_event_base_t base, 
@@ -20,10 +21,13 @@ static void default_system_handler(void *arg, esp_event_base_t base,
 {
     if (base == SYSTEM_EVENTS) {
         switch (event_id) {
-            case SYS_EVENT_TIME_SYNCED:
-                ESP_LOGI(TAG, "Time synchronized via Event Bus");
+            case EVENT_TIME_SNTP_SYNC_SUCCESS:
+                ESP_LOGI(TAG, "Time synchronized via Event Bus successfully");
                 break;
-            case SYS_EVENT_REBOOT_REQUESTED:
+            case EVENT_TIME_SNTP_SYNC_FAILED:
+                ESP_LOGI(TAG, "Time synchronized via Event Bus failed");
+                break;
+            case EVENT_SYSTEM_REBOOT_REQUESTED:
                 ESP_LOGW(TAG, "Reboot requested!");
                 break;
             default:

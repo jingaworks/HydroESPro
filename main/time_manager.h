@@ -5,6 +5,13 @@
 #include <sys/time.h>
 #include "event_bus.h"
 
+
+typedef struct {
+    struct tm timeinfo;
+    time_t unix_time;
+    bool is_synced;
+} time_event_data_t;
+
 esp_err_t time_manager_init(void);
 
 esp_err_t time_manager_sync_with_sntp(void);

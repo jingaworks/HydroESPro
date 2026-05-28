@@ -11,8 +11,9 @@ static bool sntp_initialized = false;
 static void time_sync_notification_cb(struct timeval *tv)
 {
     ESP_LOGI(TAG, "SNTP synchronized successfully!");
-    // rtc_manager_update_rtc_from_system();     // actualizăm și RTC-ul
-    // event_bus_post(SYSTEM_EVENTS, EVENT_SNTP_SYNC_SUCCESS, NULL, 0);
+    // trebuie sa convertim si sa trimitem tm pentru a putea actualiza timpul in module
+    // rtc_manager_write_time();     // actualizăm și RTC-ul rtc_manager_write_time(struct tm *timeinfo);
+    event_bus_post(SYSTEM_EVENTS, EVENT_TIME_SNTP_SYNC_SUCCESS, NULL, 0);
 }
 
 // ====================== INIT ======================

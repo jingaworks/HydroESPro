@@ -4,6 +4,10 @@
 #include "time_manager.h"
 #include "relays.h"
 #include "config.h"
+#include "event_bus.h"
+
+#include <board.h>
+
 #include <esp_log.h>
 
 static const char *TAG = "HYDRO_MANAGER";
@@ -19,7 +23,7 @@ static void hydro_state_event_handler(void *arg, esp_event_base_t base,
     if (base != SYSTEM_EVENTS) return;
 
     switch (event_id) {
-        case SYS_EVENT_STATE_CHANGED: {
+        case EVENT_SYSTEM_STATE_CHANGED: {
             state_change_event_t *ev = (state_change_event_t *)event_data;
 
             if (ev->new_state == SYS_STATE_MAINTENANCE) {
@@ -39,7 +43,7 @@ static void hydro_state_event_handler(void *arg, esp_event_base_t base,
             break;
         }
 
-        case SYS_EVENT_MAINTENANCE_END:
+        case EVENT_SYSTEM_MAINTENANCE_END:
             ESP_LOGI(TAG, "Maintenance ended → resuming normal operation");
             break;
     }
@@ -218,7 +222,7 @@ static void control_hydroponics_task(void *pvParameters) {
 // PUBLIC API
 // =============================================
 esp_err_t hydro_manager_init(void) {
-    event_bus_register_handler(SYSTEM_EVENTS, SYS_EVENT_STATE_CHANGED,
+    event_bus_register_handler(SYSTEM_EVENTS, EVENT_SYSTEM_STATE_CHANGED,
         hydro_state_event_handler, NULL);
 
     ESP_LOGI(TAG, "Hydro Manager initialized successfully ✓");

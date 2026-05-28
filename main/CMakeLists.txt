@@ -1,8 +1,4 @@
 idf_component_register(SRCS 
-                        # "dht_sensor.c"
-                        # "lcd_display.c"
-                        # "rtc_ds3231.c"
-                        # "sdcard.c"
                         
                         "main.c"
 

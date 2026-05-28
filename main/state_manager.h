@@ -1,11 +1,25 @@
 #pragma once
 
-#include <stdbool.h>
-#include <esp_err.h>
-#include <board.h>
+#include "esp_err.h"
 #include "event_bus.h"
-#include "storage_manager.h"
+#include <config.h>
+#include <stdbool.h>
+#include <time.h>
 
+typedef enum {
+    SYS_STATE_INIT = 0,
+    SYS_STATE_NORMAL,
+    SYS_STATE_ALARM,
+    SYS_STATE_MAINTENANCE,
+    SYS_STATE_ERROR,
+    SYS_STATE_SHUTDOWN
+} system_state_t;
+
+typedef struct {
+    system_state_t old_state;
+    system_state_t new_state;
+    const char* reason;
+} state_change_event_t;
 
 // ==================== PUBLIC API ====================
 esp_err_t state_manager_init(void);
@@ -16,29 +30,14 @@ esp_err_t state_manager_set_state(system_state_t new_state, const char* reason);
 void state_manager_handle_button_press(void);
 void state_manager_update_sensor_status(bool tank_low, bool temp_error);
 
+esp_err_t state_manager_trigger_alarm(const char* reason);
+esp_err_t state_manager_clear_all_alarms(void);
+
 bool state_manager_is_in_maintenance(void);
 bool state_manager_is_in_alarm(void);
 
-// New functions (Etapa 1)
-esp_err_t state_manager_trigger_alarm(const char* reason);
-esp_err_t state_manager_clear_all_alarms(void);
-void state_manager_log_event(const char* event, const char* details);
+// Event Bus integration
+void state_manager_register_event_handlers(void);
 
-// Legacy global (păstrat pentru compatibilitate)
-// extern state_manager_t sys_manager;
-
-// #ifndef STATE_MANAGER_H
-// #define STATE_MANAGER_H
-
-// #include <stdbool.h>
-// #include "board.h"
-
-
-// // Prototipurile funcțiilor de control
-// void state_manager_init(void);
-// system_state_t state_manager_get_state(void);
-// void state_manager_set_state(system_state_t new_state);
-// void state_manager_handle_button_press(void);
-// void state_manager_update_sensors_status(bool tank_low, bool temp_out_of_bounds);
-
-// #endif // STATE_MANAGER_H
+// Pentru debug / logging
+const char* state_manager_get_state_name(system_state_t state);
