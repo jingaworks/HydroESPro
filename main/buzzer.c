@@ -1,10 +1,10 @@
 
 #include "buzzer.h"
-#include "board.h"
 #include "config.h"
 #include "event_bus.h"
 #include "state_manager.h"
 #include "time_manager.h"
+#include "nvs_manager.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -12,6 +12,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include <esp_log.h>
+
+#define BUZZER_GPIO 12 
 
 static const char *TAG = "BUZZER_QUEUE";
 

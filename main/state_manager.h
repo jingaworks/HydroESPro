@@ -2,18 +2,11 @@
 
 #include "esp_err.h"
 #include "event_bus.h"
-#include <config.h>
+#include "nvs_manager.h"
+#include "config.h"
 #include <stdbool.h>
 #include <time.h>
 
-typedef enum {
-    SYS_STATE_INIT = 0,
-    SYS_STATE_NORMAL,
-    SYS_STATE_ALARM,
-    SYS_STATE_MAINTENANCE,
-    SYS_STATE_ERROR,
-    SYS_STATE_SHUTDOWN
-} system_state_t;
 
 typedef struct {
     system_state_t old_state;

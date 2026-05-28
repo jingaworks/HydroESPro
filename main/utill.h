@@ -9,7 +9,6 @@
 #include <esp_timer.h>
 #include <sys/time.h>
 
-#include "board.h"
 
 
 typedef struct Web_data

@@ -1,30 +1,51 @@
 idf_component_register(SRCS 
-                        
                         "main.c"
-
+                        "pins.h"
+                        "config.h"
+                        
+                        # Core modules
+                        "buzzer.c"   
                         "event_bus.c"
-                        "hydro_manager.c"
-                        "i2c_manager.c"
-                        "lcd_manager.c"
-                        "pcf_manager.c"
-                        "rtc_manager.c"
-                        "sensor_manager.c" # work on it
                         "state_manager.c"
                         "storage_manager.c"
                         "time_manager.c"
+                        "rtc_manager.c"
+                        "i2c_manager.c"
+                        "pcf_manager.c"
+                        "lcd_manager.c"
                         "wifi_manager.c"
+                        "nvs_manager.c"
 
-                        "ds18b20.c"
-                        "board.c"
-                        "button.c"
-                        "buzzer.c"
-                        "relays.c"
+                        # "http_server.c"
+                        # "keep_alive.c"
+                        # "utill.c"
+                        
+                        # Viitoare module (le poți comenta momentan)
+                        # "hydro_manager.c"
+                        # "light_manager.c"
+                        # "main.c"
 
-                        "http_server.c"
-                        "keep_alive.c"
-                        "utill.c"
+                        # "event_bus.c"
+                        # "hydro_manager.c"
+                        # "i2c_manager.c"
+                        # "lcd_manager.c"
+                        # "pcf_manager.c"
+                        # "rtc_manager.c"
+                        # "sensor_manager.c" # work on it
+                        # "state_manager.c"
+                        # "storage_manager.c"
+                        # "time_manager.c"
+                        # "wifi_manager.c"
 
-                        # "wifi_conn.c"
+                        # "ds18b20.c"
+                        # "board.c"
+                        # "button.c"
+                        # "buzzer.c"
+                        # "relays.c"
+
+                        # "http_server.c"
+                        # "keep_alive.c"
+                        # "utill.c"
                         
                     INCLUDE_DIRS "."
                     EMBED_FILES 

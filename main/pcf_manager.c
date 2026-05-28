@@ -11,8 +11,14 @@ static uint8_t pcf_output_state = 0xFF;      // Toate OFF
 static uint8_t last_input_state = 0xFF;
 static TaskHandle_t pcf_task_handle = NULL;
 
-static void IRAM_ATTR pcf_isr_handler(void* arg);
 static void pcf_input_task(void* pvParameters);
+
+static void IRAM_ATTR pcf_isr_handler(void* arg)
+{
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    vTaskNotifyGiveFromISR(pcf_task_handle, &xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
 
 // ====================== INIT ======================
 esp_err_t pcf_manager_init(void)
@@ -64,12 +70,6 @@ esp_err_t pcf_manager_init(void)
     return ESP_OK;
 }
 // ====================== ISR + TASK ======================
-static void IRAM_ATTR pcf_isr_handler(void* arg)
-{
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    vTaskNotifyGiveFromISR(pcf_task_handle, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-}
 
 static void pcf_input_task(void* pvParameters)
 {

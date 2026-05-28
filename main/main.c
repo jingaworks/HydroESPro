@@ -12,6 +12,8 @@
 #include "pcf_manager.h"
 #include "lcd_manager.h"
 #include "wifi_manager.h"
+#include "state_manager.h"
+#include "nvs_manager.h"
 // #include "state_manager.h"
 // #include "hydro_manager.h"
 
@@ -25,6 +27,10 @@ void app_main(void)
 
     // ==================== INIȚIALIZARE CRITICĂ ====================
     
+    // 0. NVS (non-volatile storage) manager (foarte important - sus) - 
+    nvs_manager_load_all_config();
+
+
     // 1. Event Bus
     ESP_ERROR_CHECK(event_bus_init());
 

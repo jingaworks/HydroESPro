@@ -7,12 +7,11 @@ static bool event_loop_created = false;
 
 // ==================== DEFINE ALL BASES ====================
 ESP_EVENT_DEFINE_BASE(SYSTEM_EVENTS);
-ESP_EVENT_DEFINE_BASE(SENSOR_EVENTS);
-ESP_EVENT_DEFINE_BASE(ENVIRONMENT_EVENTS);
 ESP_EVENT_DEFINE_BASE(WIFI_EVENTS);
 ESP_EVENT_DEFINE_BASE(PCF_EVENTS);
 ESP_EVENT_DEFINE_BASE(HYDRO_EVENTS);
 ESP_EVENT_DEFINE_BASE(LOG_EVENTS);
+ESP_EVENT_DEFINE_BASE(SENSOR_EVENTS);
 
 // ========================================================
 
@@ -66,10 +65,4 @@ esp_err_t event_bus_register_handler(esp_event_base_t base, int32_t event_id,
                                     esp_event_handler_t handler, void *handler_arg)
 {
     return esp_event_handler_register(base, event_id, handler, handler_arg);
-}
-
-esp_err_t event_bus_unregister_handler(esp_event_base_t base, int32_t event_id,
-                                      esp_event_handler_t handler)
-{
-    return esp_event_handler_unregister(base, event_id, handler);
 }

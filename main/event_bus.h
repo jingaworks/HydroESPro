@@ -3,6 +3,8 @@
 #include "esp_event.h"
 #include <time.h>
 #include <stdint.h>
+#include "esp_event_base.h"
+#include "esp_err.h"
 
 // =============================================
 // EVENT BASES
@@ -27,7 +29,6 @@ typedef enum {
     EVENT_SYSTEM_STATE_CHANGED,
     EVENT_SYSTEM_ERROR,
     EVENT_SYSTEM_MAINTENANCE_START,
-    // EVENT_SYSTEM_MAINTENANCE,
     EVENT_SYSTEM_MAINTENANCE_END,
 
     // Time related
@@ -57,52 +58,20 @@ typedef enum {
     EVENT_HYDRO_PUMP_STARTED,
     EVENT_HYDRO_PUMP_STOPPED,
 
+    // Alarm
+    EVENT_ALARM_TRIGGERED = 0x0600,
+
     // Future modules
-    EVENT_LIGHT_STATE_CHANGED = 0x0500,
-    EVENT_AIR_SYSTEM_CHANGED   = 0x0600,
-    EVENT_ALARM_TRIGGERED      = 0x0700,
+    EVENT_LIGHT_STATE_CHANGED = 0x0600,
+    EVENT_AIR_SYSTEM_CHANGED  = 0x0700,
     
     // ...
 
 } event_id_t;
 
-// // =============================================
-// // SYSTEM EVENTS
-// // =============================================
-// typedef enum {
-//     SYS_EVENT_TIME_UPDATED = 0,
-//     SYS_EVENT_TIME_SYNCED,
-//     SYS_EVENT_REBOOT_REQUESTED,
-//     SYS_EVENT_STATE_CHANGED,
-//     SYS_EVENT_BUTTON_PRESSED,
-//     SYS_EVENT_SENSOR_UPDATE,
-//     SYS_EVENT_ALARM_TRIGGERED,
-//     SYS_EVENT_MAINTENANCE_START,
-//     SYS_EVENT_MAINTENANCE_END,
-// } system_event_id_t;
-
-// // =============================================
-// // WIFI EVENTS
-// // =============================================
-// typedef enum {
-//     EVENT_WIFI_STATE_CHANGED = 0x200,
-//     EVENT_WIFI_STA_CONNECTED,
-//     EVENT_WIFI_STA_DISCONNECTED,
-//     EVENT_WIFI_STA_FAILED,
-//     EVENT_WIFI_AP_STOPPED,
-//     EVENT_WIFI_FALLBACK_STARTED
-// } wifi_event_id_t;
-
-// // =============================================
-// // PCF EVENTS
-// // =============================================
-// typedef enum {
-//     EVENT_PCF_INPUT_CHANGED = 0x300,
-//     EVENT_PCF_OUTPUT_CHANGED,
-//     EVENT_BUTTON_PRESSED,
-//     EVENT_FLOAT_SWITCH_CHANGED
-// } pcf_event_id_t;
-
+// Handler type
+typedef void (*event_handler_t)(void* handler_arg, esp_event_base_t base, 
+                                int32_t event_id, void* event_data);
 
 // =============================================
 // PUBLIC API
@@ -114,6 +83,3 @@ esp_err_t event_bus_post(esp_event_base_t base, int32_t event_id,
 
 esp_err_t event_bus_register_handler(esp_event_base_t base, int32_t event_id,
                                     esp_event_handler_t handler, void *handler_arg);
-
-esp_err_t event_bus_unregister_handler(esp_event_base_t base, int32_t event_id,
-                                      esp_event_handler_t handler);
